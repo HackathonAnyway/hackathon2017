@@ -5,16 +5,16 @@ import tensorflow as tf
 import obj from SortingAlgorithm
 
 
-#——————————————————导入数据——————————————————————
-# f=open('stock_dataset.csv')  
-# df=pd.read_csv(f)     #读入股票数据
-# data=np.array(df['最高价'])   #获取最高价序列
-# data=data[::-1]      #反转，使数据按照日期先后顺序排列
+#import data
+data = serverdata #attain from backend
+#data[i] = serverdata[i+1].begin - (serverdata[i].begin + severdata[i].last)
 
-#以折线图展示data
-plt.figure()
-plt.plot(data)
-plt.show()
+
+
+# #以折线图展示data
+# plt.figure()
+# plt.plot(data)
+# plt.show()
 normalize_data=(data-np.mean(data))/np.std(data)  #标准化
 normalize_data=normalize_data[:,np.newaxis]       #增加维度
 
@@ -35,7 +35,7 @@ for i in range(len(normalize_data)-time_step-1):
     train_y.append(y.tolist()) 
 
 
-
+# define neuro-network variables
 #——————————————————定义神经网络变量——————————————————
 X=tf.placeholder(tf.float32, [None,time_step,input_size])    #每批次输入网络的tensor
 Y=tf.placeholder(tf.float32, [None,time_step,output_size])   #每批次tensor对应的标签
@@ -93,8 +93,6 @@ def train_lstm():
                     print(i,step,loss_)
                     print("保存模型：",saver.save(sess,'stock.model'))
                 step+=1
-
-
 train_lstm()
 
 
@@ -106,7 +104,6 @@ def prediction():
         #参数恢复
         module_file = tf.train.latest_checkpoint(base_path+'module2/')
         saver.restore(sess, module_file) 
-
         #取训练集最后一行为测试样本。shape=[1,time_step,input_size]
         prev_seq=train_x[-1]
         predict=[]
